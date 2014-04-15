@@ -13,7 +13,7 @@
 
      var jpeg = new Image();
      jpeg.onload = function() {
-       ctx.drawImage(jpeg, 0, 0, 640, 480);
+       ctx.drawImage(this, 0, 0, c.width, c.height);
      };
 
      var source = new EventSource("stream");
