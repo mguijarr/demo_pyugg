@@ -10,6 +10,16 @@
      var ctx = c.getContext("2d");
      ctx.fillStyle = "#CCCCCC";
      ctx.fillRect(0,0,640,480);
+
+     var jpeg = new Image();
+     jpeg.onload = function() {
+       ctx.drawImage(jpeg, 0, 0, 640, 480);
+     };
+
+     var source = new EventSource("stream");
+     source.addEventListener("message", function(e) {
+       jpeg.src = "data:image/jpeg;base64,"+e.data;    
+     });
    </script>
  </body>
 </html>
