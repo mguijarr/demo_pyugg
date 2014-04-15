@@ -1,6 +1,7 @@
 import bottle
 import os
 import gevent
+import gevent.event
 import cv2
 import time
 import base64
