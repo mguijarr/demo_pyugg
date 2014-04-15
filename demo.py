@@ -6,6 +6,7 @@ import cv2
 import time
 import base64
 import cStringIO
+import Image
 
 WEBCAM_GREENLET = None
 WEBCAM_IMAGE = None
