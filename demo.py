@@ -7,6 +7,7 @@ import time
 import base64
 import cStringIO
 import Image
+import numpy
 
 WEBCAM_GREENLET = None
 WEBCAM_IMAGE = None
@@ -18,11 +19,11 @@ def _do_webcam_acq():
     while True:
         _, frame = webcam.read()
         h,w,depth = frame.shape
-        raw_data = frame.tostring()
-        WEBCAM_IMAGE = Image.fromstring('RGB' if depth==3 else 'L',(w,h),raw_data) 
+        # too bad it has to be converted from BGR to RGB :(
+        WEBCAM_IMAGE = Image.fromarray(numpy.roll(frame, 1, axis=-1)) 
         WEBCAM_NEW_IMAGE.set()
-        time.sleep(0.04)
         WEBCAM_NEW_IMAGE.clear()
+        time.sleep(0.04)
                      
 def start_webcam_acq():
     global WEBCAM_GREENLET
@@ -47,6 +48,5 @@ def send_jpeg_stream():
         frame_no += 1
         WEBCAM_IMAGE.save(jpeg_file, format="JPEG")
         encoded_data = base64.b64encode(jpeg_file.getvalue())
-        print "frame %04d"%frame_no,"sending",len(encoded_data),"bytes"
         yield "data: %s\n\n" % encoded_data
 
