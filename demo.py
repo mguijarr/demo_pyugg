@@ -13,6 +13,7 @@ WEBCAM_IMAGE = None
 WEBCAM_NEW_IMAGE = gevent.event.Event()
 
 def _do_webcam_acq():
+    global WEBCAM_IMAGE
     webcam = cv2.VideoCapture(0)
     while True:
         _, frame = webcam.read()
@@ -36,12 +37,16 @@ def demo_app():
 
 @bottle.route("/stream")
 def send_jpeg_stream():
-    response.content_type = "text/event-stream"
-    response.connection = "keep-alive"
-    response.cache_control = "no-cache"
+    bottle.response.content_type = "text/event-stream"
+    bottle.response.connection = "keep-alive"
+    bottle.response.cache_control = "no-cache"
+    frame_no = 0
     while True:
         jpeg_file = cStringIO.StringIO()
         WEBCAM_NEW_IMAGE.wait()
-        WEBCAM_IMAGE.write(jpeg_file, format="JPG")
-        yield "data: %s\n\n" % base64.b64encode(jpeg_file.read())
+        frame_no += 1
+        WEBCAM_IMAGE.save(jpeg_file, format="JPEG")
+        encoded_data = base64.b64encode(jpeg_file.getvalue())
+        print "frame %04d"%frame_no,"sending",len(encoded_data),"bytes"
+        yield "data: %s\n\n" % encoded_data
 

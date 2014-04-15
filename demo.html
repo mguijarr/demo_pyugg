@@ -19,7 +19,7 @@
      var source = new EventSource("stream");
      source.addEventListener("message", function(e) {
        jpeg.src = "data:image/jpeg;base64,"+e.data;    
-     });
+     }, false);
    </script>
  </body>
 </html>
