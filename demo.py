@@ -10,17 +10,20 @@ import Image
 import numpy
 
 WEBCAM_GREENLET = None
-WEBCAM_IMAGE = None
+WEBCAM_ENCODED_JPEG = None
 WEBCAM_NEW_IMAGE = gevent.event.Event()
 
 def _do_webcam_acq():
-    global WEBCAM_IMAGE
+    global WEBCAM_ENCODED_JPEG
     webcam = cv2.VideoCapture(0)
     while True:
         _, frame = webcam.read()
         h,w,depth = frame.shape
         # too bad it has to be converted from BGR to RGB :(
-        WEBCAM_IMAGE = Image.fromarray(numpy.roll(frame, 1, axis=-1)) 
+        im = Image.fromarray(numpy.roll(frame, 1, axis=-1)) 
+        jpeg_file = cStringIO.StringIO()
+        im.save(jpeg_file, format="JPEG")
+        WEBCAM_ENCODED_JPEG = base64.b64encode(jpeg_file.getvalue())
         WEBCAM_NEW_IMAGE.set()
         WEBCAM_NEW_IMAGE.clear()
         time.sleep(0.04)
@@ -43,10 +46,7 @@ def send_jpeg_stream():
     bottle.response.cache_control = "no-cache"
     frame_no = 0
     while True:
-        jpeg_file = cStringIO.StringIO()
         WEBCAM_NEW_IMAGE.wait()
         frame_no += 1
-        WEBCAM_IMAGE.save(jpeg_file, format="JPEG")
-        encoded_data = base64.b64encode(jpeg_file.getvalue())
-        yield "data: %s\n\n" % encoded_data
+        yield "data: %s\n\n" % WEBCAM_ENCODED_JPEG
 
