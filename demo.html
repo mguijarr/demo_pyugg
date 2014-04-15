@@ -1,0 +1,15 @@
+<html>
+  <body>
+   <h1>Hello, PyUGG!</h1>
+   <canvas id="webcam_display" width="640" height="480"
+    style="border:1px solid #000000;">
+   </canvas>
+
+   <script>
+     var c = document.getElementById("webcam_display");
+     var ctx = c.getContext("2d");
+     ctx.fillStyle = "#CCCCCC";
+     ctx.fillRect(0,0,640,480);
+   </script>
+ </body>
+</html>
