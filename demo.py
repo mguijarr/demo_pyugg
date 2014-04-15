@@ -16,19 +16,15 @@ def _do_webcam_acq():
     while True:
         _, frame = webcam.read()
         h,w,depth = frame.shape
-        if depth == 3:
-            mode="RGB"
-        else:
-            mode="L" 
         raw_data = frame.tostring()
-        WEBCAM_IMAGE = Image.fromstring(mode,(w,h),raw_data) 
+        WEBCAM_IMAGE = Image.fromstring('RGB' if depth==3 else 'L',(w,h),raw_data) 
         WEBCAM_NEW_IMAGE.set()
         time.sleep(0.04)
         WEBCAM_NEW_IMAGE.clear()
                      
 def start_webcam_acq():
     global WEBCAM_GREENLET
-    if WEBCAM_GREENLET:
+    if WEBCAM_GREENLET is None:
         WEBCAM_GREENLET = gevent.spawn(_do_webcam_acq)
 
 @bottle.route("/")
