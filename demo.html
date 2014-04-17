@@ -1,9 +1,14 @@
 <html>
   <body>
    <h1>Hello, PyUGG!</h1>
-   <canvas id="webcam_display" width="640" height="480"
-    style="border:1px solid #000000;">
-   </canvas>
+   <div style="float: left;">
+     <canvas id="webcam_display" width="640" height="480"
+      style="border:1px solid #000000;">
+     </canvas>
+   </div>
+   <div style="float: left;">
+     <button onclick="JavaScript:dummy_request();">Test Long Polling</button>
+   </div>
 
    <script>
      var jpeg_data;
@@ -26,6 +31,17 @@
        jpeg_data = e.data;
        requestAnimationFrame(display_data); 
      }, false);
+
+     function dummy_request() {
+       var xhr = new XMLHttpRequest();
+       xhr.onreadystatechange = function() {
+         if (this.readyState == 4) {
+           alert(this.responseText); 
+         }
+       };
+       xhr.open("GET","dummy_request", true);
+       xhr.send(null);
+     };
    </script>
  </body>
 </html>

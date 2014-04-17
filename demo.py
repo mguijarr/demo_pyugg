@@ -8,6 +8,7 @@ import base64
 import cStringIO
 import Image
 import numpy
+import subprocess
 
 WEBCAM_GREENLET = None
 WEBCAM_ENCODED_JPEG = None
@@ -49,4 +50,14 @@ def send_jpeg_stream():
     while True:
         WEBCAM_NEW_IMAGE.wait()
         yield "data: %s\n\n" % WEBCAM_ENCODED_JPEG
+
+@bottle.route("/dummy_request")
+def reply_dummy_request():
+    print "Received request", bottle.request
+    print "  - processing..."
+    time.sleep(5)
+    p=subprocess.Popen("fortune", stdout=subprocess.PIPE)
+    p.wait()
+    print "  - done."
+    return p.stdout.read()
 
