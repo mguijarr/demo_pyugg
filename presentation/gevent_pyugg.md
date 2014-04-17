@@ -2,20 +2,46 @@
 
 ## One of the best kept secrets of Python
 
-
+<br>
+<br>
 
 *by Matias Guijarro*
 
-
-
-#### Grenoble Python Users Meeting, 16/04/2014 
+<br>
+<br>
+<img src="pyugg.png" align="left"/>
+####            Grenoble Python Users Meeting, 16/04/2014 
 
 ---
 
 # About the speaker
 
+* Software Engineer education
+    - University of Technology of Belfort-Montbéliard (UTBM)
+
+* 34 years old, father of 2 (very) young kids 
+
+* Spanish origins, French nationality, 100% from Pays Voironnais 
+<img src="voiron.png"/>
+
 ---
 
+# About the speaker
+
+* Most recent work experience
+    - European Synchrotron Radiation Facility (<a href="http://www.esrf.eu">ESRF</a>), Grenoble
+
+* Python lover since 2000
+    - daily use at work
+    - automation, scientific instrumentation control, experiment sequences
+
+* Other technologies
+    - <a href="http://www.lua.org">Lua</a>, powerful, fast, lightweight, embeddable scripting language
+    - interested in <a href="http://www.golang.org">Go</a> (but not tried yet)
+    - start to look at HTML 5, Javascript, web applications
+
+---
+ 
 # A refresher on Concurrency
 
 ---
@@ -580,6 +606,17 @@ Timeouts
     - writing asynchronous applications is extremely easy, as they look and feel like synchronous 
 
 --- 
+
+# Example code
+
+* <a href="http://github.com/mguijarr/demo_pyugg">github repository</a>
+
+* Useful links
+    - <a href="http://www.html5canvastutorials.com/advanced/html5-canvas-animation-stage/">Canvas and animation frame</a>
+    - <a href="http://www.html5rocks.com/en/tutorials/eventsource/basics/?redirect_from_locale=fr">Server-Sent Events</a>
+    - <a href="http://en.wikipedia.org/wiki/Push_technology#Long_polling">Long polling</a>
+
+---
 
 # Thanks for your attention :) Questions ?
 
