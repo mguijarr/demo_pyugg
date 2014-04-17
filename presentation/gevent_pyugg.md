@@ -10,7 +10,7 @@
 <br>
 <br>
 <img src="pyugg.png" align="left"/>
-####            Grenoble Python Users Meeting, 16/04/2014 
+####            Grenoble Python Users Meeting, 17/04/2014 
 
 ---
 
@@ -619,5 +619,3 @@ Timeouts
 ---
 
 # Thanks for your attention :) Questions ?
-
----
