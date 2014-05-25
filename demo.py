@@ -8,6 +8,7 @@ import base64
 import cStringIO
 import Image
 import numpy
+import zlib
 import subprocess
 
 WEBCAM_GREENLET = None
@@ -43,13 +44,17 @@ def demo_app():
     return bottle.static_file("demo.html", root=os.path.dirname(__file__))
 
 @bottle.route("/stream")
-def send_jpeg_stream():
+def send_jpeg_stream(): 
+    gzip_stream = zlib.compressobj()
     bottle.response.content_type = "text/event-stream"
-    bottle.response.connection = "keep-alive"
-    bottle.response.cache_control = "no-cache"
+    bottle.response.add_header("Connection", "keep-alive")
+    bottle.response.add_header("Cache-Control", "no-cache, must-revalidate")
+    bottle.response.add_header("Content-Encoding", "deflate")
+    bottle.response.add_header("Transfer-Encoding", "chunked")
     while True:
         WEBCAM_NEW_IMAGE.wait()
-        yield "data: %s\n\n" % WEBCAM_ENCODED_JPEG
+        yield gzip_stream.compress("data: %s\n\n" % WEBCAM_ENCODED_JPEG)
+        yield gzip_stream.flush(zlib.Z_SYNC_FLUSH)
 
 @bottle.route("/dummy_request")
 def reply_dummy_request():
