@@ -12,6 +12,7 @@
 
    <script>
      var jpeg_data;
+     var frame_id = null;
      var c = document.getElementById("webcam_display");
      var ctx = c.getContext("2d");
      ctx.fillStyle = "#CCCCCC";
@@ -23,13 +24,15 @@
      };
 
      function display_data() {
+       frame_id = null;
        jpeg.src = "data:image/jpeg;base64,"+jpeg_data;
      };
 
      var source = new EventSource("stream");
      source.addEventListener("message", function(e) {
+       if (frame_id != null) { cancelAnimationFrame(frame_id); }
        jpeg_data = e.data;
-       requestAnimationFrame(display_data); 
+       frame_id = requestAnimationFrame(display_data); 
      }, false);
 
      function dummy_request() {
