@@ -1,9 +1,20 @@
 <html>
+  <style>
+    .hidden {
+      position:absolute; 
+      z-index:-1; 
+    }
+    .webcam {
+      position:relative;
+      z-index:1;
+      border:1px solid #000000;
+    }
+  </style>
   <body>
    <h1>Hello, PyUGG!</h1>
    <div style="float: left;">
-     <canvas id="webcam_display" width="640" height="480"
-      style="border:1px solid #000000;">
+     <video class="hidden" poster="stream"></video>
+     <canvas class="webcam" id="webcam_display" width="640" height="480">
      </canvas>
    </div>
    <div style="float: left;">
@@ -11,30 +22,18 @@
    </div>
 
    <script>
-     var jpeg_data;
      var frame_id = null;
      var c = document.getElementById("webcam_display");
+     c.addEventListener("click", function() { alert("clicked"); });
      var ctx = c.getContext("2d");
-     ctx.fillStyle = "#CCCCCC";
-     ctx.fillRect(0,0,640,480);
-
-     var jpeg = new Image();
-     jpeg.onload = function() {
-       ctx.drawImage(this, 0, 0, c.width, c.height);
+     ctx.rect(20,20,150,100);
+     ctx.stroke();
+     /*function draw_on_canvas() {
+       ctx.drawImage(document.getElementById("v"),0,0);
+       window.requestAnimationFrame(draw_on_canvas);
      };
-
-     function display_data() {
-       frame_id = null;
-       jpeg.src = "data:image/jpeg;base64,"+jpeg_data;
-     };
-
-     var source = new EventSource("stream");
-     source.addEventListener("message", function(e) {
-       if (frame_id != null) { cancelAnimationFrame(frame_id); }
-       jpeg_data = e.data;
-       frame_id = requestAnimationFrame(display_data); 
-     }, false);
-
+     window.requestAnimationFrame(draw_on_canvas);
+     */
      function dummy_request() {
        var xhr = new XMLHttpRequest();
        xhr.onreadystatechange = function() {

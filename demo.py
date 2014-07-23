@@ -1,4 +1,5 @@
 import bottle
+import bottle.ext.werkzeug
 import os
 import gevent
 import gevent.event
@@ -14,6 +15,10 @@ import subprocess
 WEBCAM_GREENLET = None
 WEBCAM_ENCODED_JPEG = None
 WEBCAM_NEW_IMAGE = gevent.event.Event()
+werkzeug = bottle.ext.werkzeug.Plugin(evalex=True)
+app = bottle.Bottle(catchall=False)
+app.install(werkzeug)
+
 
 def _do_webcam_acq():
     global WEBCAM_ENCODED_JPEG
@@ -28,7 +33,7 @@ def _do_webcam_acq():
         rgb_im = Image.merge("RGB", (r,g,b))
         jpeg_file = cStringIO.StringIO()
         rgb_im.save(jpeg_file, format="JPEG")
-        WEBCAM_ENCODED_JPEG = base64.b64encode(jpeg_file.getvalue())
+        WEBCAM_ENCODED_JPEG = jpeg_file.getvalue()
         WEBCAM_NEW_IMAGE.set()
         WEBCAM_NEW_IMAGE.clear()
         time.sleep(0.04)
@@ -45,19 +50,14 @@ def demo_app():
 
 @bottle.route("/stream")
 def send_jpeg_stream(): 
-    gzip_stream = zlib.compressobj()
-    bottle.response.content_type = "text/event-stream"
-    bottle.response.add_header("Connection", "keep-alive")
-    bottle.response.add_header("Cache-Control", "no-cache, must-revalidate")
-    bottle.response.add_header("Content-Encoding", "deflate")
-    bottle.response.add_header("Transfer-Encoding", "chunked")
+    bottle.response.content_type = 'multipart/x-mixed-replace; boundary="!>"'
     while True:
         WEBCAM_NEW_IMAGE.wait()
-        yield gzip_stream.compress("data: %s\n\n" % WEBCAM_ENCODED_JPEG)
-        yield gzip_stream.flush(zlib.Z_SYNC_FLUSH)
+        yield 'Content-type: image/jpg\n\n'+WEBCAM_ENCODED_JPEG+"\n--!>"
 
 @bottle.route("/dummy_request")
 def reply_dummy_request():
+    1/0
     print "Received request", bottle.request
     print "  - processing..."
     time.sleep(5)
